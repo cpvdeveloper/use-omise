@@ -2,15 +2,24 @@
   "name": "use-omise",
   "version": "0.1.0",
   "description": "A React hook for Omise payments",
+  "author": "Chris Vibert",
+  "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "typings": "build/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "prepublishOnly": "yarn test && yarn build",
     "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cpv123/use-omise"
+  },
+  "keywords": [
+    "react",
+    "omise"
+  ],
   "devDependencies": {
     "@testing-library/react-hooks": "^3.7.0",
     "@types/jest": "^26.0.19",
@@ -24,10 +33,12 @@
     "ts-jest": "^26.4.4",
     "typescript": "^4.1.3"
   },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
-  },
-  "dependencies": {}
+  }
 }
