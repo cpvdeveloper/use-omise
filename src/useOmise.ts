@@ -4,6 +4,7 @@ import type {
   useOmiseArgs,
   useOmiseReturn,
   CreateTokenFunction,
+  CreateSourceFunction,
 } from './types';
 
 export const checkCreateTokenError: useOmiseReturn['checkCreateTokenError'] = (
@@ -26,6 +27,10 @@ export const useOmise = ({
     createTokenFn,
     setCreateTokenFn,
   ] = useState<CreateTokenFunction | null>(null);
+  const [
+    createSourceFn,
+    setCreateSourceFn,
+  ] = useState<CreateSourceFunction | null>(null);
   const [loadingScript, errorLoadingScript] = useOmiseScript(scriptType);
 
   useEffect(() => {
@@ -36,11 +41,17 @@ export const useOmise = ({
 
   useEffect(() => {
     if (window.Omise) {
+      const { Omise } = window;
       const createToken = () => {
-        const { Omise } = window;
         return Omise.createToken.bind(Omise);
       };
+
+      const createSource = () => {
+        return Omise.createSource.bind(Omise);
+      };
+
       setCreateTokenFn(createToken);
+      setCreateSourceFn(createSource);
     }
   }, [loadingScript]);
 
@@ -49,5 +60,6 @@ export const useOmise = ({
     loadingError: errorLoadingScript,
     createToken: createTokenFn,
     checkCreateTokenError,
+    createSource: createSourceFn,
   };
 };

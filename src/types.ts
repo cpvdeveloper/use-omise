@@ -13,7 +13,7 @@ export interface useOmiseArgs {
 
 export type CreateTokenAsTypes = 'card';
 
-export type CreateTokenHandler = (
+export type CreateHandler = (
   status: number,
   response: Record<string, any>
 ) => void;
@@ -21,7 +21,13 @@ export type CreateTokenHandler = (
 export type CreateTokenFunction = (
   as: CreateTokenAsTypes,
   attributes: Record<string, any>,
-  handler: CreateTokenHandler
+  handler: CreateHandler
+) => void;
+
+export type CreateSourceFunction = (
+  type: string,
+  options: Record<string, unknown>,
+  handler: CreateHandler
 ) => void;
 
 export interface useOmiseReturn {
@@ -29,4 +35,5 @@ export interface useOmiseReturn {
   loadingError: boolean;
   createToken: CreateTokenFunction | null;
   checkCreateTokenError: (response: Record<string, any>) => string | null;
+  createSource: CreateSourceFunction | null;
 }

@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "yarn test && yarn build",
+    "preversion": "yarn test",
     "test": "jest"
   },
   "repository": {

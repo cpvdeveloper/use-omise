@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 import { OMISE_SCRIPTS } from '../useOmiseScript';
 import { useOmise, checkCreateTokenError } from '../useOmise';
 
@@ -36,6 +36,7 @@ describe('the useOmise hook', () => {
   const TEST_PUBLIC_KEY = 'test-omise-key';
   const setPublicKeyMock = jest.fn();
   const createTokenMock = jest.fn();
+  const createSourceMock = jest.fn();
 
   beforeEach(() => {
     const html = document.querySelector('html');
@@ -45,6 +46,7 @@ describe('the useOmise hook', () => {
 
     window.Omise = {
       createToken: createTokenMock,
+      createSource: createSourceMock,
       setPublicKey: setPublicKeyMock,
     };
   });
@@ -126,5 +128,18 @@ describe('the useOmise hook', () => {
     result.current.createToken?.('card', {}, () => {});
     expect(createTokenMock).toHaveBeenCalledTimes(1);
     expect(createTokenMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns the Omise create source function', () => {
+    const { result } = renderHook(() =>
+      useOmise({ publicKey: TEST_PUBLIC_KEY })
+    );
+
+    expect(typeof result.current.createSource).toBe('function');
+
+    expect(createSourceMock).toHaveBeenCalledTimes(0);
+    result.current.createSource?.('internet_banking_scb', {}, () => {});
+    expect(createSourceMock).toHaveBeenCalledTimes(1);
+    expect(createSourceMock).toHaveBeenCalledTimes(1);
   });
 });

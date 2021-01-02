@@ -4,7 +4,8 @@ export type {
   ScriptTypes,
   useOmiseArgs,
   CreateTokenAsTypes,
-  CreateTokenHandler,
+  CreateHandler,
   CreateTokenFunction,
+  CreateSourceFunction,
   useOmiseReturn,
 } from './types';
