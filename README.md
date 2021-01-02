@@ -57,4 +57,5 @@ The `cardFormValues` object will hold the details of the card to be charged, e.g
 
 1. Loads the [Omise.js](https://github.com/omise/omise.js) script. By default it will use the primary CDN (Singapore) but the secondary CDN (Japan) can also be used
 2. Once loaded, it will initialise `Omise` by setting the public key that you provide
-3. Returns you the `createToken` function which can be used to use create tokens, which can then be used to make charges
+3. Returns you the `createToken` function which can be used to use create tokens which can then be used to make charges
+   - Also returned is the `createSource` function for creating sources
