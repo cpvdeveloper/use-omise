@@ -8,15 +8,17 @@ import type {
 } from './types';
 
 export const checkCreateTokenError: useOmiseReturn['checkCreateTokenError'] = (
+  status,
   response
 ) => {
+  if (status === 200) return null;
   if (response.card && !response.card.security_code_check) {
     return 'Incorrect security code';
   }
   if (response.object === 'error') {
     return response.message;
   }
-  return null;
+  return 'Unknown error';
 };
 
 export const useOmise = ({

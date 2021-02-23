@@ -4,31 +4,38 @@ import { useOmise, checkCreateTokenError } from '../useOmise';
 
 describe('the checkCreateTokenError helper function', () => {
   it('returns null if there is no error', () => {
+    const TEST_SUCCESS_STATUS = 200;
     const successResponse = {
       object: 'token',
     };
-    expect(checkCreateTokenError(successResponse)).toBe(null);
+    expect(checkCreateTokenError(TEST_SUCCESS_STATUS, successResponse)).toBe(
+      null
+    );
   });
 
   it('returns the error message from the response', () => {
+    const TEST_ERROR_STATUS = 400;
     const TEST_ERROR_MESSAGE = 'test error';
     const errorResponse = {
       object: 'error',
       message: TEST_ERROR_MESSAGE,
     };
-    expect(checkCreateTokenError(errorResponse)).toBe(TEST_ERROR_MESSAGE);
+    expect(checkCreateTokenError(TEST_ERROR_STATUS, errorResponse)).toBe(
+      TEST_ERROR_MESSAGE
+    );
   });
 
   it('returns the security code error message', () => {
+    const TEST_ERROR_STATUS = 400;
     const securityCodeErrorResponse = {
       object: 'error',
       card: {
         security_code_check: false,
       },
     };
-    expect(checkCreateTokenError(securityCodeErrorResponse)).toBe(
-      'Incorrect security code'
-    );
+    expect(
+      checkCreateTokenError(TEST_ERROR_STATUS, securityCodeErrorResponse)
+    ).toBe('Incorrect security code');
   });
 });
 
@@ -108,8 +115,8 @@ describe('the useOmise hook', () => {
       message: TEST_ERROR_MESSAGE,
     };
 
-    expect(checkCreateTokenError(successResponse)).toBe(null);
-    expect(checkCreateTokenError(errorResponse)).toBe(TEST_ERROR_MESSAGE);
+    expect(checkCreateTokenError(200, successResponse)).toBe(null);
+    expect(checkCreateTokenError(400, errorResponse)).toBe(TEST_ERROR_MESSAGE);
   });
 
   it('sets the Omise public key', () => {
