@@ -34,6 +34,9 @@ export interface useOmiseReturn {
   loading: boolean;
   loadingError: boolean;
   createToken: CreateTokenFunction | null;
-  checkCreateTokenError: (response: Record<string, any>) => string | null;
+  checkCreateTokenError: (
+    status: number,
+    response: Record<string, any>
+  ) => string | null;
   createSource: CreateSourceFunction | null;
 }
