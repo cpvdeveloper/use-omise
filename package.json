@@ -1,6 +1,6 @@
 {
   "name": "use-omise",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "A React hook for Omise payments",
   "author": "Chris Vibert",
   "license": "MIT",
