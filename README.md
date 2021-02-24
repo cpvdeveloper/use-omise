@@ -31,7 +31,7 @@ function PaymentForm() {
   const handleSubmit = (cardFormValues) => {
     createToken('card', cardFormValues, (status, response) => {
       if (status === 200) {
-        // The token is available as response.id.
+        // The token is available as response.id
         // Send the token to your server to create a charge e.g. { token: response.id }
       }
     });
@@ -51,6 +51,21 @@ The `cardFormValues` object will hold the details of the card to be charged, e.g
   expiration_month: "06",
   expiration_year: "2020"
 }
+```
+
+There is a `checkCreateTokenError` function available from `useOmise` which can be used to check if the token has been created successfully, and will return relevant error messages in cases where it has not worked:
+
+```jsx
+const { createToken, checkCreateTokenError } = useOmise({
+  publicKey: 'YOUR-OMISE-PUBLIC-KEY',
+});
+...
+const handleSubmit = (cardFormValues) => {
+  createToken('card', cardFormValues, (status, response) => {
+    const tokenErrorMessage = checkCreateTokenError(status, response)
+    return tokenErrorMessage ? handleError(tokenErrorMessage) : handleSuccess(response.id)
+  });
+};
 ```
 
 ## How it works
