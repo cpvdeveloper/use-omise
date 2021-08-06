@@ -22,19 +22,19 @@ And make sure you also have **React installed at version 16.8 or above**.
 
 ```jsx
 function PaymentForm() {
-  const { loading, createToken } = useOmise({
+  const { loading, createTokenPromise } = useOmise({
     publicKey: 'YOUR-OMISE-PUBLIC-KEY',
   });
 
   if (loading) return <div>Loading OmiseJS...</div>;
 
-  const handleSubmit = (cardFormValues) => {
-    createToken('card', cardFormValues, (status, response) => {
-      if (status === 200) {
-        // The token is available as response.id
-        // Send the token to your server to create a charge e.g. { token: response.id }
-      }
-    });
+  const handleSubmit = async (cardFormValues) => {
+    try {
+      const token = await createTokenPromise('card', cardFormValues);
+      // Send the token to your server to create a charge
+    } catch (error) {
+      // Handle error on the UI
+    }
   };
 
   return <CreditCardForm handleSubmit={handleSubmit} />;
@@ -45,7 +45,7 @@ The `cardFormValues` object will hold the details of the card to be charged, e.g
 
 ```js
 {
-  name: "Exmaple card holder",
+  name: "Example card holder",
   number: "4242424242424242",
   security_code: "111",
   expiration_month: "06",
@@ -53,24 +53,30 @@ The `cardFormValues` object will hold the details of the card to be charged, e.g
 }
 ```
 
-There is a `checkCreateTokenError` function available from `useOmise` which can be used to check if the token has been created successfully, and will return relevant error messages in cases where it has not worked:
+## What the use-omise hook returns
 
 ```jsx
-const { createToken, checkCreateTokenError } = useOmise({
-  publicKey: 'YOUR-OMISE-PUBLIC-KEY',
-});
-...
-const handleSubmit = (cardFormValues) => {
-  createToken('card', cardFormValues, (status, response) => {
-    const tokenErrorMessage = checkCreateTokenError(status, response)
-    return tokenErrorMessage ? handleError(tokenErrorMessage) : handleSuccess(response.id)
-  });
-};
+const {
+  loading,
+  createTokenPromise,
+  createToken,
+  createSource,
+  checkCreateTokenError,
+} = useOmise({ publicKey: 'YOUR-OMISE-PUBLIC-KEY' });
 ```
+
+**Note:** It is recommended that you use the `createTokenPromise` function for creating tokens - this allows you to use `async/await` and promise chaining syntax rather than callbacks. It also uses the `checkCreateTokenError` helper function internally to check for all possible errors.
+
+| Value                   | Type     | Description                                                         |
+| ----------------------- | -------- | ------------------------------------------------------------------- |
+| `loading`               | boolean  | Indicates if the omise.js script is currently loading               |
+| `createTokenPromise`    | function | A 'promisified' version of the createToken function                 |
+| `createToken`           | function | The original Omise createToken function in callback format          |
+| `createSource`          | function | The original Omise createSource function in callback format         |
+| `checkCreateTokenError` | function | A helper function to check if the createToken has returned an error |
 
 ## How it works
 
 1. Loads the [Omise.js](https://github.com/omise/omise.js) script. By default it will use the primary CDN (Singapore) but the secondary CDN (Japan) can also be used
 2. Once loaded, it will initialise `Omise` by setting the public key that you provide
-3. Returns you the `createToken` function which can be used to use create tokens which can then be used to make charges
-   - Also returned is the `createSource` function for creating sources
+3. Returns you the functions needed to create tokens/source which can then be used to make charges on the server
