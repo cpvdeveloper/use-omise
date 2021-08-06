@@ -5,6 +5,7 @@ import type {
   useOmiseReturn,
   CreateTokenFunction,
   CreateSourceFunction,
+  CreateTokenPromiseFunction,
 } from './types';
 
 export const checkCreateTokenError: useOmiseReturn['checkCreateTokenError'] = (
@@ -33,6 +34,10 @@ export const useOmise = ({
     createSourceFn,
     setCreateSourceFn,
   ] = useState<CreateSourceFunction | null>(null);
+  const [
+    createTokenPromiseFn,
+    setCreateTokenPromiseFn,
+  ] = useState<CreateTokenPromiseFunction | null>(null);
   const [loadingScript, errorLoadingScript] = useOmiseScript(scriptType);
 
   useEffect(() => {
@@ -44,16 +49,35 @@ export const useOmise = ({
   useEffect(() => {
     if (window.Omise) {
       const { Omise } = window;
-      const createToken = () => {
-        return Omise.createToken.bind(Omise);
-      };
+      const omiseCreateToken: CreateTokenFunction = Omise.createToken.bind(
+        Omise
+      );
+      const omiseCreateSource: CreateSourceFunction = Omise.createSource.bind(
+        Omise
+      );
 
-      const createSource = () => {
-        return Omise.createSource.bind(Omise);
+      const createToken = () => omiseCreateToken;
+      const createSource = () => omiseCreateSource;
+
+      // Promisify the original createToken function.
+      const createTokenPromise = (): CreateTokenPromiseFunction => {
+        return (as, attributes) => {
+          return new Promise((resolve, reject) => {
+            omiseCreateToken(as, attributes, (status, response) => {
+              const hasError = checkCreateTokenError(status, response);
+              if (hasError) {
+                reject(response);
+              } else {
+                resolve(response?.id);
+              }
+            });
+          });
+        };
       };
 
       setCreateTokenFn(createToken);
       setCreateSourceFn(createSource);
+      setCreateTokenPromiseFn(createTokenPromise);
     }
   }, [loadingScript]);
 
@@ -61,6 +85,7 @@ export const useOmise = ({
     loading: loadingScript,
     loadingError: errorLoadingScript,
     createToken: createTokenFn,
+    createTokenPromise: createTokenPromiseFn,
     checkCreateTokenError,
     createSource: createSourceFn,
   };
