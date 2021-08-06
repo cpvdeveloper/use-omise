@@ -12,28 +12,29 @@ export interface useOmiseArgs {
 }
 
 export type CreateTokenAsTypes = 'card';
+type TokenParams = Record<string, string | number>;
 
 export type CreateHandler = (
   status: number,
-  response: Record<string, any>
+  response: Record<string, string>
 ) => void;
 
 export type CreateTokenFunction = (
-  as: CreateTokenAsTypes,
-  attributes: Record<string, unknown>,
+  type: CreateTokenAsTypes,
+  tokenParams: TokenParams,
   handler: CreateHandler
 ) => void;
 
 export type CreateSourceFunction = (
   type: string,
-  options: Record<string, unknown>,
+  sourceParams: Record<string, unknown>,
   handler: CreateHandler
 ) => void;
 
 export type CreateTokenPromiseFunction = (
-  as: CreateTokenAsTypes,
-  attributes: Record<string, any>
-) => Promise<any>;
+  type: CreateTokenAsTypes,
+  tokenParams: TokenParams
+) => Promise<string | Record<string, string>>;
 
 export interface useOmiseReturn {
   loading: boolean;
