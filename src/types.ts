@@ -20,7 +20,7 @@ export type CreateHandler = (
 
 export type CreateTokenFunction = (
   as: CreateTokenAsTypes,
-  attributes: Record<string, any>,
+  attributes: Record<string, unknown>,
   handler: CreateHandler
 ) => void;
 
@@ -29,6 +29,11 @@ export type CreateSourceFunction = (
   options: Record<string, unknown>,
   handler: CreateHandler
 ) => void;
+
+export type CreateTokenPromiseFunction = (
+  as: CreateTokenAsTypes,
+  attributes: Record<string, any>
+) => Promise<any>;
 
 export interface useOmiseReturn {
   loading: boolean;
@@ -39,4 +44,5 @@ export interface useOmiseReturn {
     response: Record<string, any>
   ) => string | null;
   createSource: CreateSourceFunction | null;
+  createTokenPromise: CreateTokenPromiseFunction | null;
 }
