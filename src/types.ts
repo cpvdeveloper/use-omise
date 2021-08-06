@@ -34,7 +34,7 @@ export type CreateSourceFunction = (
 export type CreateTokenPromiseFunction = (
   type: CreateTokenAsTypes,
   tokenParams: TokenParams
-) => Promise<string | Record<string, string>>;
+) => Promise<string>;
 
 export interface useOmiseReturn {
   loading: boolean;
