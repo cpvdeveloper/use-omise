@@ -45,6 +45,7 @@ describe('the useOmise hook', () => {
   const createTokenMock = jest.fn();
   const createSourceMock = jest.fn();
   const createTokenPromiseMock = jest.fn();
+  const createSourcePromiseMock = jest.fn();
 
   beforeEach(() => {
     const html = document.querySelector('html');
@@ -150,7 +151,7 @@ describe('the useOmise hook', () => {
     expect(createSourceMock).toHaveBeenCalledTimes(1);
   });
 
-  it('returns a promisified version of the Omise create source function', () => {
+  it('returns a promisified version of the Omise create token function', () => {
     const { result } = renderHook(() =>
       useOmise({ publicKey: TEST_PUBLIC_KEY })
     );
@@ -161,5 +162,20 @@ describe('the useOmise hook', () => {
     result.current.createTokenPromise?.('card', {}).then(() => {
       expect(createTokenPromiseMock).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('returns a promisified version of the Omise create source function', () => {
+    const { result } = renderHook(() =>
+      useOmise({ publicKey: TEST_PUBLIC_KEY })
+    );
+
+    expect(typeof result.current.createSourcePromise).toBe('function');
+
+    expect(createSourcePromiseMock).toHaveBeenCalledTimes(0);
+    result.current
+      .createSourcePromise?.('internet_banking_bbl', {})
+      .then(() => {
+        expect(createSourcePromiseMock).toHaveBeenCalledTimes(1);
+      });
   });
 });

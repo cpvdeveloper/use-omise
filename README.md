@@ -59,18 +59,20 @@ The `cardFormValues` object will hold the details of the card to be charged, e.g
 const {
   loading,
   createTokenPromise,
+  createSourcePromise,
   createToken,
   createSource,
   checkCreateTokenError,
 } = useOmise({ publicKey: 'YOUR-OMISE-PUBLIC-KEY' });
 ```
 
-**Note:** It is recommended that you use the `createTokenPromise` function for creating tokens - this allows you to use `async/await` and promise chaining syntax rather than callbacks. It also uses the `checkCreateTokenError` helper function internally to check for all possible errors.
+**Note:** It is recommended that you use the `createTokenPromise` and `createSourcePromise` functions for creating tokens and sources - this allows you to use `async/await` and promise chaining syntax rather than callbacks. The promisified token function also uses the `checkCreateTokenError` helper function internally to check for all possible errors.
 
 | Value                   | Type     | Description                                                         |
 | ----------------------- | -------- | ------------------------------------------------------------------- |
 | `loading`               | boolean  | Indicates if the omise.js script is currently loading               |
 | `createTokenPromise`    | function | A 'promisified' version of the createToken function                 |
+| `createSourcePromise`   | function | A 'promisified' version of the createSource function                |
 | `createToken`           | function | The original Omise createToken function in callback format          |
 | `createSource`          | function | The original Omise createSource function in callback format         |
 | `checkCreateTokenError` | function | A helper function to check if the createToken has returned an error |
