@@ -6,6 +6,7 @@ import type {
   CreateTokenFunction,
   CreateSourceFunction,
   CreateTokenPromiseFunction,
+  CreateSourcePromiseFunction,
 } from './types';
 
 export const checkCreateTokenError: useOmiseReturn['checkCreateTokenError'] = (
@@ -38,6 +39,10 @@ export const useOmise = ({
     createTokenPromiseFn,
     setCreateTokenPromiseFn,
   ] = useState<CreateTokenPromiseFunction | null>(null);
+  const [
+    createSourcePromiseFn,
+    setCreateSourcePromiseFn,
+  ] = useState<CreateSourcePromiseFunction | null>(null);
   const [loadingScript, errorLoadingScript] = useOmiseScript(scriptType);
 
   useEffect(() => {
@@ -75,9 +80,25 @@ export const useOmise = ({
         };
       };
 
+      // Promisify the original createSource function.
+      const createSourcePromise = (): CreateSourcePromiseFunction => {
+        return (type, attributes) => {
+          return new Promise((resolve, reject) => {
+            omiseCreateSource(type, attributes, (status, response) => {
+              if (status !== 200) {
+                reject(response);
+              } else {
+                resolve(response?.id);
+              }
+            });
+          });
+        };
+      };
+
       setCreateTokenFn(createToken);
       setCreateSourceFn(createSource);
       setCreateTokenPromiseFn(createTokenPromise);
+      setCreateSourcePromiseFn(createSourcePromise);
     }
   }, [loadingScript]);
 
@@ -86,6 +107,7 @@ export const useOmise = ({
     loadingError: errorLoadingScript,
     createToken: createTokenFn,
     createTokenPromise: createTokenPromiseFn,
+    createSourcePromise: createSourcePromiseFn,
     checkCreateTokenError,
     createSource: createSourceFn,
   };
