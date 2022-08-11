@@ -1,6 +1,8 @@
 src
 .vscode
 .prettierrc
+.github
+tsconfig.json
 jest.config.js
 yarn.lock
 build/tsconfig.tsbuildinfo
